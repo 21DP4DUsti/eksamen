@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sneaker Store</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+    (function(){
+    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+    s1.async=true;
+    s1.src='https://embed.tawk.to/6658d8099a809f19fb370f6b/1hv5gnpq9';
+    s1.charset='UTF-8';
+    s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1,s0);
+    })();
+    </script>
+    <!--End of Tawk.to Script-->
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="Brands.html">Brands</a></li>
+                <li><a href="Contact.html">Contact</a></li>
+                <li><a href="AboutUs.html">About Us</a></li>
+            </ul>
+        </nav>
+        <h1>Sneaker Auction</h1>
+        <a href="cart.html" class="cart-icon"> 
+            <img src="cart.png" alt="Cart">
+            <span class="cart-counter">0</span>
+        </a>
+        <a href="#" class="register-button" id="registerButton">Login</a>
+        <a href="#" class="logout-button" id="logoutButton" style="display: none;">Logout</a>
+        <button id="themeToggle" class="theme-toggle-button">Switch Theme</button>
+        <div class="user-display"></div>
+        <script src="script.js"></script>
+    </header>
+    
+    
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const loginForm = document.getElementById('loginForm');
+    const logoutButton = document.getElementById('logoutButton');
+    const header = document.querySelector('header');
+    let userDisplay;
+
+    loginForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const formData = new FormData(loginForm);
+
+        fetch('login.php', {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => response.text())
+        .then(data => {
+            if (data === 'Login successful!') {
+                userDisplay = document.createElement('div');
+                userDisplay.classList.add('user-display');
+                userDisplay.textContent = `${formData.get('username')}`;
+                header.appendChild(userDisplay);
+                registrationPopup.style.display = 'none';
+
+                // Сохранение имени пользователя в localStorage
+                localStorage.setItem('username', formData.get('username'));
+
+                // Показать кнопку "Logout" и скрыть кнопку "Login"
+                document.getElementById('registerButton').style.display = 'none';
+                logoutButton.style.display = 'block';
+
+                // Добавление обработчика клика на имя пользователя
+                userDisplay.addEventListener('click', function() {
+                    window.location.href = 'user_info.html';
+                });
+            } else {
+                alert(data);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    });
+
+    // Отображение имени пользователя при загрузке страницы
+    const storedUsername = localStorage.getItem('username');
+    if (storedUsername) {
+        userDisplay = document.createElement('div');
+        userDisplay.classList.add('user-display');
+        userDisplay.textContent = storedUsername;
+        header.appendChild(userDisplay);
+
+        // Показать кнопку "Logout" и скрыть кнопку "Login"
+        document.getElementById('registerButton').style.display = 'none';
+        logoutButton.style.display = 'block';
+
+        // Добавление обработчика клика на имя пользователя
+        userDisplay.addEventListener('click', function() {
+            window.location.href = 'user_info.html';
+        });
+    }
+
+    // Добавить обработчик для кнопки "Logout"
+    logoutButton.addEventListener('click', function() {
+        localStorage.removeItem('username');
+        header.removeChild(userDisplay);
+        document.getElementById('registerButton').style.display = 'block';
+        logoutButton.style.display = 'none';
+    });
+});
+</script>
+    </div>
+</div>
+<section class="advertisement">
+    <div class="advertisement-content">
+        <div class="gif-container">
+            <!-- Замените эту строку на тег <img> с вашей гифкой -->
+            <img src="black_friday.png" alt="Black Friday Sale Silhouette">
+            <button class="shipping-button">Sale</button>
+        </div>
+    </div>
+</section>
+
+
+<section class="featured-products">
+    <h2>Welcome to the auction! Here are sneakers that were recently up for auction:</h2>
+    <div class="sneaker-images">
+        <img src="sneaker1.png" alt="Sneaker 1" data-id="1">
+        <img src="sneaker2.png" alt="Sneaker 2" data-id="2">
+        <img src="sneaker3.png" alt="Sneaker 3" data-id="3">
+        <img src="sneaker4.png" alt="Sneaker 4" data-id="4">
+        <img src="sneaker5.png" alt="Sneaker 5" data-id="5">
+        <img src="sneaker6.png" alt="Sneaker 6" data-id="6">
+    </div>
+</section>
+
+<div class="sneaker-info-popup" id="sneakerInfoPopup">
+    <div class="popup-content">
+        <span class="close-button">&times;</span>
+        <h2>Sneaker Information</h2>
+        <table>
+            <tr><td>ID:</td><td id="sneakerId"></td></tr>
+            <tr><td>Name:</td><td id="sneakerName"></td></tr>
+            <tr><td>Brand:</td><td id="sneakerBrand"></td></tr>
+            <tr><td>Model:</td><td id="sneakerModel"></td></tr>
+            <tr><td>Size:</td><td id="sneakerSize"></td></tr>
+            <tr><td>Color:</td><td id="sneakerColor"></td></tr>
+            <tr><td>Release Date:</td><td id="sneakerReleaseDate"></td></tr>
+            <tr><td>Retail Price:</td><td id="sneakerRetailPrice"></td></tr>
+            <tr><td>Description:</td><td id="sneakerDescription"></td></tr>
+            <tr><td>Image:</td><td><img id="sneakerImage" src="" alt="Sneaker Image"></td></tr>
+        </table>
+    </div>
+</div>
+    <h2>Online Aukcions:</h2>
+    
+    <section class="product-list" id="productList">
+        <div class="product">
+            <div class="product-image">
+                <img src="product1.jpg" alt="Sneaker 1">
+            </div>
+            <div class="product-details">
+                <h3>Nike Dunk Low University Blue</h3>
+                <p>110$</p>
+                <button class="join-auction-button">Join auction</button>
+                <button class="info-button" data-id="1">Info</button>
+                <p class="seller-info" data-seller-id="1"><a href="seller_info.html?seller_id=1">Seller: John Doe</a></p>
+            </div>
+        </div>
+        <div class="product">
+            <div class="product-image">
+                <img src="product2.jpg" alt="Sneaker 2">
+            </div>
+            <div class="product-details">
+                <h3>Nike Air Force 1 Low Flax 2020</h3>
+                <p>99$</p>
+                <button class="join-auction-button">Join auction</button>
+                <button class="info-button" data-id="2">Info</button>
+                <p class="seller-info" data-seller-id="2"><a href="seller_info.html?seller_id=2">Seller: Jane Smith</a></p>
+            </div>
+        </div>
+        <div class="product">
+            <div class="product-image">
+                <img src="product3.jpg" alt="Sneaker 3">
+            </div>
+            <div class="product-details">
+                <h3>Adidas Superstar Classic White</h3>
+                <p>120$</p>
+                <button class="join-auction-button">Join auction</button>
+                <button class="info-button" data-id="3">Info</button>
+                <p class="seller-info" data-seller-id="3"><a href="seller_info.html?seller_id=3">Seller: Michael Johnson</a></p>
+            </div>
+        </div>
+    </section>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const infoButtons = document.querySelectorAll('.info-button');
+        
+        infoButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const auctionId = this.getAttribute('data-id');
+                window.location.href = `auction_info.html?auction_id=${auctionId}`;
+            });
+        });
+    });
+</script>
+
+<h2>Add your sneakers for auction</h2>
+<form action="add_sneaker.php" method="post" id="sneakerForm">
+    <input type="text" name="name" placeholder="Sneaker Name" required>
+    <input type="text" name="brand" placeholder="Brand" required>
+    <input type="text" name="model" placeholder="Model" required>
+    <input type="number" name="size" placeholder="Size" required>
+    <input type="text" name="color" placeholder="Color" required>
+    <input type="date" name="release_date" placeholder="Release Date" required>
+    <input type="number" name="retail_price" placeholder="Retail Price" required>
+    <textarea name="description" placeholder="Description" required></textarea>
+    <input type="url" name="image_url" placeholder="Image URL" required>
+    <input type="hidden" name="seller_name" id="sellerName">
+    <button type="submit">Add Sneaker</button>
+</form>
+
+    <h2>Add Auction Details</h2>
+    <form action="add_auction.php" method="post" id="auctionForm">
+        <input type="hidden" name="sneaker_id" id="auctionSneakerId">
+        <input type="text" name="title" placeholder="Auction Title" required>
+        <textarea name="description" placeholder="Description" required></textarea>
+        <input type="datetime-local" name="start_time" placeholder="Start Time" required>
+        <input type="datetime-local" name="end_time" placeholder="End Time" required>
+        <input type="number" name="bid_count" placeholder="Bid Count" required>
+        <button type="submit">Add Auction</button>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const storedUsername = localStorage.getItem('username');
+        if (storedUsername) {
+            document.getElementById('sellerName').value = storedUsername;
+        }
+
+        const sneakerForm = document.getElementById('sneakerForm');
+
+        sneakerForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(sneakerForm);
+            fetch('add_sneaker.php', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Show auction form
+                    auctionFormContainer.style.display = 'block';
+                    // Set sneaker_id for auction form
+                    document.getElementById('auctionSneakerId').value = data.sneaker_id;
+                    sneakerForm.style.display = 'none';
+                } else {
+                    alert('Failed to add sneaker');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const auctionForm = document.getElementById('auctionForm');
+        const auctionFormContainer = document.querySelector('.auction-form-container');
+        
+        auctionForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(auctionForm);
+            fetch('add_auction.php', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Auction added successfully');
+                    auctionForm.reset();
+                } else {
+                    alert('Failed to add auction: ' + data.error);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const sneakerForm = document.getElementById('sneakerForm');
+    const auctionForm = document.getElementById('auctionForm');
+    const productList = document.getElementById('productList');
+
+    // Загрузка сохраненных кроссовок и аукционов из localStorage
+    const savedSneakers = JSON.parse(localStorage.getItem('sneakers')) || [];
+    const savedAuctions = JSON.parse(localStorage.getItem('auctions')) || [];
+    
+    savedSneakers.forEach(sneaker => {
+        addSneakerToProductList(sneaker);
+    });
+
+    savedAuctions.forEach(auction => {
+        const infoButton = document.querySelector(`.info-button[data-id="${auction.sneaker_id}"]`);
+        if (infoButton) {
+            infoButton.addEventListener('click', () => {
+                showAuctionInfo(auction);
+            });
+        }
+    });
+
+    sneakerForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        const formData = new FormData(sneakerForm);
+        const newSneaker = {
+            id: Date.now(),
+            name: formData.get('name'),
+            brand: formData.get('brand'),
+            model: formData.get('model'),
+            size: formData.get('size'),
+            color: formData.get('color'),
+            release_date: formData.get('release_date'),
+            retail_price: formData.get('retail_price'),
+            description: formData.get('description'),
+            image_url: formData.get('image_url'),
+            seller_name: formData.get('seller_name')
+        };
+
+        savedSneakers.push(newSneaker);
+        localStorage.setItem('sneakers', JSON.stringify(savedSneakers));
+
+        addSneakerToProductList(newSneaker);
+        sneakerForm.reset();
+    });
+
+    auctionForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        const formData = new FormData(auctionForm);
+        const newAuction = {
+            sneaker_id: formData.get('sneaker_id'),
+            title: formData.get('title'),
+            description: formData.get('description'),
+            start_time: formData.get('start_time'),
+            end_time: formData.get('end_time'),
+            bid_count: formData.get('bid_count')
+        };
+
+        savedAuctions.push(newAuction);
+        localStorage.setItem('auctions', JSON.stringify(savedAuctions));
+
+        const infoButton = document.querySelector(`.info-button[data-id="${newAuction.sneaker_id}"]`);
+        if (infoButton) {
+            infoButton.addEventListener('click', () => {
+                showAuctionInfo(newAuction);
+            });
+        }
+    });
+
+    function addSneakerToProductList(sneaker) {
+        const productDiv = document.createElement('div');
+        productDiv.classList.add('product');
+
+        const productImageDiv = document.createElement('div');
+        productImageDiv.classList.add('product-image');
+        const productImage = document.createElement('img');
+        productImage.src = sneaker.image_url;
+        productImage.alt = sneaker.name;
+        productImageDiv.appendChild(productImage);
+
+        const productDetailsDiv = document.createElement('div');
+        productDetailsDiv.classList.add('product-details');
+
+        const productName = document.createElement('h3');
+        productName.textContent = sneaker.name;
+        const productPrice = document.createElement('p');
+        productPrice.textContent = `${sneaker.retail_price}$`;
+
+        const joinAuctionButton = document.createElement('button');
+        joinAuctionButton.classList.add('join-auction-button');
+        joinAuctionButton.textContent = 'Join auction';
+
+        const infoButton = document.createElement('button');
+        infoButton.classList.add('info-button');
+        infoButton.textContent = 'Info';
+        infoButton.setAttribute('data-id', sneaker.id);
+
+        infoButton.addEventListener('click', function() {
+        const sneakerId = this.getAttribute('data-id');
+        window.location.href = `au_info.php?sneaker_id=${sneakerId}`;
+});
+
+        const sellerInfo = document.createElement('p');
+        sellerInfo.classList.add('seller-info');
+        const sellerLink = document.createElement('a');
+        sellerLink.href = `user_info.html`;
+        sellerLink.textContent = `Seller: ${sneaker.seller_name}`;
+        sellerInfo.appendChild(sellerLink);
+
+        productDetailsDiv.appendChild(productName);
+        productDetailsDiv.appendChild(productPrice);
+        productDetailsDiv.appendChild(joinAuctionButton);
+        productDetailsDiv.appendChild(infoButton);
+        productDetailsDiv.appendChild(sellerInfo);
+
+        productDiv.appendChild(productImageDiv);
+        productDiv.appendChild(productDetailsDiv);
+
+        productList.appendChild(productDiv);
+    }
+
+    function showAuctionInfo(auction) {
+        const popup = document.getElementById('sneakerInfoPopup');
+        document.getElementById('popupSneakerId').textContent = auction.sneaker_id;
+        document.getElementById('popupSneakerName').textContent = auction.title;
+        document.getElementById('popupSneakerBrand').textContent = auction.brand;
+        document.getElementById('popupSneakerModel').textContent = auction.model;
+        document.getElementById('popupSneakerSize').textContent = auction.size;
+        document.getElementById('popupSneakerColor').textContent = auction.color;
+        document.getElementById('popupSneakerReleaseDate').textContent = auction.release_date;
+        document.getElementById('popupSneakerRetailPrice').textContent = auction.retail_price;
+        document.getElementById('popupSneakerDescription').textContent = auction.description;
+        document.getElementById('popupSneakerImage').src = auction.image_url;
+        
+        popup.style.display = 'block';
+    }
+
+    document.querySelector('.close-button').addEventListener('click', function() {
+        document.getElementById('sneakerInfoPopup').style.display = 'none';
+    });
+});
+</script>
+<section class="newsletter">
+    <h2>Subscribe to Our Newsletter</h2>
+    <form id="subscribeForm">
+        <input type="email" placeholder="Enter your e-mail">
+        <button type="submit">Subscribe</button>
+    </form>
+    <div class="success-message" style="display:none; color:green;">You have successfully subscribed!</div>
+</section>
+
+<footer>
+    <div class="footer-container">
+        <div class="footer-column">
+            <h3>About Us</h3>
+            <p>Sneaker Aukcion is the leading online auction platform for sneaker enthusiasts. Discover rare finds and bid on your favorite sneakers today.</p>
+        </div>
+        <div class="footer-column">
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="Brands.html">Brands</a></li>
+                <li><a href="Contact.html">Contact</a></li>
+                <li><a href="AboutUs.html">About Us</a></li>
+            </ul>
+        </div>
+        <div class="footer-column">
+            <h3>Follow Us</h3>
+            <div class="social-links">
+                <a href="#"><img src="facebook-icon.png" alt="Facebook"></a>
+                <a href="#"><img src="twitter-icon.png" alt="Twitter"></a>
+                <a href="#"><img src="instagram-icon.png" alt="Instagram"></a>
+            </div>
+        </div>
+        <div class="footer-column">
+            <h3>Contact Us</h3>
+            <p>Address: Martas-Rinkas1, Riga, Latvija</p>
+            <p>Phone: +371 22303133</p>
+            <p>Email: <a href="mailto:info@sneakerstore.com">info@sneakerstore.com</a></p>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2024 Sneaker Store. All rights reserved.</p>
+    </div>
+</footer>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const joinAuctionButtons = document.querySelectorAll('.join-auction-button');
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    function updateCartCounter() {
+        const cartCounter = document.querySelector('.cart-counter');
+        cartCounter.textContent = cart.length;
+    }
+
+    function addItemToCart(item) {
+        cart.push(item);
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartCounter();
+        alert('Item added to cart!');
+    }
+
+    joinAuctionButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const product = this.closest('.product');
+            const itemName = product.querySelector('h3').textContent;
+            const itemPrice = parseFloat(product.querySelector('p').textContent.replace('$', ''));
+            addItemToCart({ name: itemName, price: itemPrice });
+        });
+    });
+
+    updateCartCounter();
+});
+    </script>
+    
+
+
+</body>
+</html>
